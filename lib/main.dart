@@ -152,6 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
   
   void testCache() async{
     // HiCache? cache = await HiCache.prefsInit();
+    //
     HiCache.getInstance().setString('cjw', '666');
     var value = HiCache.getInstance().get('cjw');
 

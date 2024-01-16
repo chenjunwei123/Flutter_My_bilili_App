@@ -1,8 +1,8 @@
 /*
  * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
  * @Date: 2024-01-14 12:59:22
- * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
- * @LastEditTime: 2024-01-14 18:58:30
+ * @LastEditors: cjw 1294511002@qq.com
+ * @LastEditTime: 2024-01-16 22:53:54
  * @FilePath: \my_bili_app\lib\http\core\hi_net.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,7 +14,7 @@ import 'package:my_bili_app/http/core/hi_net_adapter.dart';
 import 'package:my_bili_app/http/core/mock_adapter.dart';
 import 'package:my_bili_app/http/request/base_request.dart';
 
-class HiNet {  
+class HiNet {
   HiNet._();
   static HiNet instance = HiNet._();
   static HiNet getInstance() {
@@ -31,48 +31,46 @@ class HiNet {
     try {
       response = await send(request);
       print('response#: $response');
-    } on HiNetError catch(e){ // HiNetError类型的错误
+    } on HiNetError catch (e) {
+      // HiNetError类型的错误
       error = e;
       response = e.data;
       print(e.message);
-    }catch(e){
+    } catch (e) {
       // 其他异常
       error = e;
       print(error);
     }
 
-    if(response == null) {
+    if (response == null) {
       print(error);
     }
     var result = response?.data;
-    printLog('result1111: ${result}');
 
-    
-  var status = response?.statusCode;
-  switch(status) {
-    case 200:
-      return result;
-    case 401:
-    print('throw NeedLogin()');
-      throw NeedLogin();
-    case 403:
-      throw NeedAuth(result.toString(), data: result['data']);
-    default:
-      throw HiNetError(status!, result.toString(), data: result['data']);
+    var status = response?.statusCode;
+    switch (status) {
+      case 200:
+        return result;
+      case 401:
+        print('throw NeedLogin()');
+        throw NeedLogin();
+      case 403:
+        throw NeedAuth(result.toString(), data: result['data']);
+      default:
+        throw HiNetError(status!, result.toString(), data: result['data']);
+    }
   }
-}
-
 
   Future<dynamic> send<T>(BaseRequest request) async {
     printLog('url:${request.url()}');
     // 使用Mock发送数据
-    // HiNetAdapter adapter = MockAdapter();
-    // return adapter.send<Map<String, Object>>(request);
+    HiNetAdapter adapter = MockAdapter();
+    return adapter.send<Map<String, Object>>(request);
     //使用Dio发送数据
-    HiNetAdapter adapter = DioAdapter();
-    var aa = adapter.send(request);
-    print('aa:$aa');
-    return aa;
+    // HiNetAdapter adapter = DioAdapter();
+    // return adapter.send(request);
+    // print('aa:$aa');
+    // return aa;
   }
 
   printLog(log) {

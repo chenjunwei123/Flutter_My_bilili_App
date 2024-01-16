@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_bili_app/http/core/hi_cache.dart';
 import 'package:my_bili_app/http/core/hi_error.dart';
 import 'package:my_bili_app/http/core/hi_net.dart';
+import 'package:my_bili_app/http/dao/login_dao.dart';
 import 'package:my_bili_app/http/request/test_request.dart';
 
 void main() {
@@ -76,23 +77,24 @@ class _MyHomePageState extends State<MyHomePage> {
     print('json:$json');
   }
   void _incrementCounter() async{
-    testCache();
-    TestRequest request = TestRequest();
-    request.add("requestPrams", "ddd").add('course-flag', '487');
-    try {
-      var result = await HiNet.getInstance().fire(request);
-      print('result1:$result');
-    } on NeedAuth catch(e) {
-      print('NeedAuth');
-      print(e);
-    } on NeedLogin catch(e) {
-      print('NeedLogin');
-      print(e);
-    } on HiNetError catch(e) {
-      print('HiNetError');
-      print(e);
-    }
-    jsonTest();
+    // testCache();
+    testLogin();
+    // TestRequest request = TestRequest();
+    // request.add("requestPrams", "ddd").add('course-flag', '487');
+    // try {
+    //   var result = await HiNet.getInstance().fire(request);
+    //   print('result1:$result');
+    // } on NeedAuth catch(e) {
+    //   print('NeedAuth');
+    //   print(e);
+    // } on NeedLogin catch(e) {
+    //   print('NeedLogin');
+    //   print(e);
+    // } on HiNetError catch(e) {
+    //   print('HiNetError');
+    //   print(e);
+    // }
+    // jsonTest();
   }
 
   @override
@@ -157,5 +159,16 @@ class _MyHomePageState extends State<MyHomePage> {
     var value = HiCache.getInstance().get('cjw');
 
     print('cjw:$value');
+  }
+  
+  void testLogin() async{
+    try{
+      var result = await LoginDao.registration('cjw', '1234', '1234', '1234');
+      print('result: $result'); 
+    } on NeedAuth catch(e) {
+      print('NeedAuth:$e');
+    } on HiNetError catch(e) {
+      print('HiNetError:$e');
+    }
   }
 }

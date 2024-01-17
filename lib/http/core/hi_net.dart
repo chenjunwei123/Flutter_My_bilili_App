@@ -2,7 +2,7 @@
  * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
  * @Date: 2024-01-14 12:59:22
  * @LastEditors: cjw 1294511002@qq.com
- * @LastEditTime: 2024-01-16 22:53:54
+ * @LastEditTime: 2024-01-17 21:32:57
  * @FilePath: \my_bili_app\lib\http\core\hi_net.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -25,12 +25,11 @@ class HiNet {
     return instance;
   }
 
-  Future fire(BaseRequest request) async {
+  Future fire(BaseRequest request, String type) async {
     HiNetResponse? response;
     var error;
     try {
-      response = await send(request);
-      print('response#: $response');
+      response = await send(request, type);
     } on HiNetError catch (e) {
       // HiNetError类型的错误
       error = e;
@@ -61,10 +60,11 @@ class HiNet {
     }
   }
 
-  Future<dynamic> send<T>(BaseRequest request) async {
+  Future<dynamic> send<T>(BaseRequest request, String type) async {
     printLog('url:${request.url()}');
     // 使用Mock发送数据
-    HiNetAdapter adapter = MockAdapter();
+
+    HiNetAdapter adapter = MockAdapter(type: type);
     return adapter.send<Map<String, Object>>(request);
     //使用Dio发送数据
     // HiNetAdapter adapter = DioAdapter();

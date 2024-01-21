@@ -2,7 +2,7 @@
  * @Author: cjw 1294511002@qq.com
  * @Date: 2024-01-16 22:25:26
  * @LastEditors: cjw 1294511002@qq.com
- * @LastEditTime: 2024-01-20 21:59:41
+ * @LastEditTime: 2024-01-21 19:57:47
  * @FilePath: \my_bili_app\lib\http\dao\login_dao.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -41,12 +41,11 @@ class LoginDao {
     print(1111);
     var result = await HiNet.getInstance()
         .fire(request, rePassword == null ? 'login' : 'registry');
-    print('result: $result');
+        print('result: $result');
     if (result['code'] == '0' && result['data'] != null) {
       if (rePassword == null) {
         HiCache.getInstance().setString(LOGIN_PASS, result['data']);
       } else {
-        print(3333);
         HiCache.getInstance().setString(REGISTRY_PASS, result['data']);
         print('regis: ${HiCache.getInstance().get(REGISTRY_PASS)}');
       }
@@ -55,6 +54,7 @@ class LoginDao {
   }
 
   static getBoardingPass() {
+    print('HiCache.getInstance().get(LOGIN_PASS): ${HiCache.getInstance().get(LOGIN_PASS)}');
     return HiCache.getInstance().get(LOGIN_PASS);
   }
 

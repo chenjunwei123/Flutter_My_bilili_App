@@ -2,7 +2,7 @@
  * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
  * @Date: 2024-01-14 15:18:21
  * @LastEditors: cjw 1294511002@qq.com
- * @LastEditTime: 2024-01-20 22:00:50
+ * @LastEditTime: 2024-01-21 20:03:12
  * @FilePath: \my_bili_app\lib\http\core\mock_adapter.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */ 
@@ -24,7 +24,6 @@ class MockAdapter extends HiNetAdapter {
   Future<HiNetResponse<T>> send<T>(BaseRequest request) {
     if(type == 'login') {
       var registryInfo = getRegistryPass();
-        print('registryInfo： $registryInfo');
       userName = request.params['userName'];
       password = request.params['password'];
       
@@ -49,6 +48,8 @@ class MockAdapter extends HiNetAdapter {
   }
   
   getRegistryPass() {
-    return jsonDecode(HiCache.getInstance().get(REGISTRY_PASS));
+    var registryData = HiCache.getInstance().get(REGISTRY_PASS);
+    if(registryData != null) return jsonDecode(registryData);
+    return null;
   }
 }

@@ -10,9 +10,10 @@ import 'package:my_bili_app/widget/login_regis_button.dart';
 import 'package:my_bili_app/widget/message_tip.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key, required this.onJumpToRegistry}) : super(key: key);
+  const LoginPage({Key? key, required this.onJumpToRegistry, this.onSuccess}) : super(key: key);
 
   final VoidCallback onJumpToRegistry;
+  final VoidCallback? onSuccess;
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -97,12 +98,14 @@ class _LoginPageState extends State<LoginPage> {
     try {
       var result = await LoginDao.login(userName, password);
       if (result['code'] == '0') {
-        await showMessageTipDialog(context, '登录成功');
+        // await showMessageTipDialog(context, '登录成功');
         // showToast('登录成功');
-        if (widget.onJumpToRegistry != null) {
-          widget.onJumpToRegistry();
+        if (widget.onSuccess != null) {
+          print('success');
+          widget.onSuccess!();
         }
       } else {
+        print(111);
         await showMessageTipDialog(context, '${result['msg']}');
           // showWarningToast('${result['msg']}');
       }

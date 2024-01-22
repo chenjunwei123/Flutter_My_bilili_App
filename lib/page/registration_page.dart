@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:my_bili_app/http/core/hi_cache.dart';
 import 'package:my_bili_app/http/core/hi_error.dart';
 import 'package:my_bili_app/http/dao/login_dao.dart';
+import 'package:my_bili_app/navigitor/hi_navigator.dart';
 import 'package:my_bili_app/util/color.dart';
 // import 'package:my_bili_app/util/toast.dart';
 import 'package:my_bili_app/widget/appbar.dart';
@@ -21,9 +22,8 @@ import 'package:my_bili_app/widget/login_input.dart';
 import 'package:my_bili_app/widget/message_tip.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key, required this.onJumpToLogin})
+  const RegistrationPage({Key? key})
       : super(key: key);
-  final VoidCallback onJumpToLogin;
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
@@ -42,7 +42,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("注册", "登录", widget.onJumpToLogin),
+      appBar: appBar("注册", "登录", () {
+        HiNavigator.getInstance().onJumpTo(RouteStatus.login);
+      }),
       body: Container(
         child: ListView(
           children: [
@@ -141,9 +143,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         await showMessageTipDialog(context, '注册成功');
         // showToast('注册成功');
 
-        if (widget.onJumpToLogin != null) {
-          widget.onJumpToLogin();
-        }
+        HiNavigator.getInstance().onJumpTo(RouteStatus.login);
       } else {
         await showMessageTipDialog(context, '注册失败:${result['msg']}');
         // showWarningToast('注册失败:${result['msg']}');

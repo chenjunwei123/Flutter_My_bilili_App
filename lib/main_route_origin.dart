@@ -2,7 +2,7 @@
  * @Author: cjw 1294511002@qq.com
  * @Date: 2024-01-13 21:50:09
  * @LastEditors: cjw 1294511002@qq.com
- * @LastEditTime: 2024-01-21 18:40:15
+ * @LastEditTime: 2024-01-22 21:46:41
  * @FilePath: \my_bili_app\lib\main.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -78,9 +78,7 @@ class MyApp extends StatelessWidget {
         ),
         home: Builder(
           builder: (context) {
-            return RegistrationPage(onJumpToLogin: () {
-              onJumpToLogin(context);
-            });
+            return RegistrationPage();
           },
         )
         // home: LoginPage(onJumpToRegistry: (){
@@ -95,20 +93,15 @@ class MyApp extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => RegistrationPage(onJumpToLogin: () {
-            onJumpToLogin(context);
-          }),
+          builder: (context) => RegistrationPage(),
         ));
   }
 
   void onJumpToLogin(context) {
-    print('onJumpToLogin');
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(onJumpToRegistry: () {
-            onJumpToRegistry(context);
-          }),
+          builder: (context) => LoginPage(),
         ));
   }
 }
@@ -121,40 +114,28 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
   List<MaterialPage> pages = [];
   VedioModel? vedioModel;
 
-
   @override
   Widget build(BuildContext context) {
     //路由堆栈管理
     var index = getPageIndex(pages, _routeStatus);
     List<MaterialPage> tempPages = pages;
-    if(index != -1) {
+    if (index != -1) {
       tempPages = tempPages.sublist(0, index);
     }
     var page;
-    if(routeStatus == RouteStatus.home) {
+    if (routeStatus == RouteStatus.home) {
       pages.clear();
-      page = pageWrap(HomePage(
-        onJumpToDetail: (videoMoel) {
-          this.vedioModel = videoMoel;
-          notifyListeners();
-        },
-      ));
-    }else if(routeStatus == RouteStatus.detail){
+      page = pageWrap(HomePage());
+    } else if (routeStatus == RouteStatus.detail) {
       page = pageWrap(VedioPageDetail(vedioModel: vedioModel));
-    }else if(routeStatus == RouteStatus.registration){
-      page = pageWrap(RegistrationPage(onJumpToLogin: (){
-        _routeStatus = RouteStatus.login;
-        notifyListeners();
-      }));
-    }else if(routeStatus == RouteStatus.login){
-      page = pageWrap(LoginPage(onJumpToRegistry: (){
-        _routeStatus = RouteStatus.home;
-        notifyListeners();
-      }));
+    } else if (routeStatus == RouteStatus.registration) {
+      page = pageWrap(RegistrationPage());
+    } else if (routeStatus == RouteStatus.login) {
+      page = pageWrap(LoginPage());
     }
 
-  tempPages = [...tempPages, page];
-  pages = tempPages;
+    tempPages = [...tempPages, page];
+    pages = tempPages;
     return Navigator(
       key: navigatorKey,
       pages: pages,
@@ -167,17 +148,16 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
     );
   }
 
-
   RouteStatus get routeStatus {
     //如果不是登录页面且未登录，则返回登录页面
-    if(_routeStatus != RouteStatus.registration && !hasLogin) {
-       _routeStatus = RouteStatus.login;
-    }else if(vedioModel != null) {
-       _routeStatus = RouteStatus.detail;
+    if (_routeStatus != RouteStatus.registration && !hasLogin) {
+      _routeStatus = RouteStatus.login;
+    } else if (vedioModel != null) {
+      _routeStatus = RouteStatus.detail;
     }
     return _routeStatus;
   }
-  
+
   bool get hasLogin => LoginDao.getBoardingPass() != null;
   // @override
   // // TODO: implement navigatorKey

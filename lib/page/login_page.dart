@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_bili_app/http/core/hi_error.dart';
 import 'package:my_bili_app/http/dao/login_dao.dart';
+import 'package:my_bili_app/navigitor/hi_navigator.dart';
 import 'package:my_bili_app/util/color.dart';
 // import 'package:my_bili_app/util/toast.dart';
 import 'package:my_bili_app/widget/appbar.dart';
@@ -10,9 +11,8 @@ import 'package:my_bili_app/widget/login_regis_button.dart';
 import 'package:my_bili_app/widget/message_tip.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key, required this.onJumpToRegistry, this.onSuccess}) : super(key: key);
+  const LoginPage({Key? key, this.onSuccess}) : super(key: key);
 
-  final VoidCallback onJumpToRegistry;
   final VoidCallback? onSuccess;
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -26,7 +26,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("登录", "注册", widget.onJumpToRegistry),
+      appBar: appBar("登录", "注册", () {
+         HiNavigator.getInstance().onJumpTo(RouteStatus.registration);
+      }),
       body: Container(
         child: ListView(
           children: [

@@ -2,7 +2,7 @@
  * @Author: cjw 1294511002@qq.com
  * @Date: 2024-01-21 14:21:47
  * @LastEditors: cjw 1294511002@qq.com
- * @LastEditTime: 2024-01-22 21:26:25
+ * @LastEditTime: 2024-01-23 22:01:45
  * @FilePath: \my_bili_app\lib\navigitor\hi_navigator.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,6 +12,8 @@ import 'package:my_bili_app/page/home_page.dart';
 import 'package:my_bili_app/page/login_page.dart';
 import 'package:my_bili_app/page/registration_page.dart';
 import 'package:my_bili_app/page/vedio_page_detail.dart';
+
+typedef RouteChangeListener = void Function (RouteStatusInfo current, RouteStatusInfo pre);
 
 pageWrap(Widget child) {
   return MaterialPage(key: ValueKey(child.hashCode), child: child);
@@ -61,6 +63,10 @@ class HiNavigator extends _RouteJumpListener {
 
   RouteJumpListener? _routeJump;
 
+  RouteStatusInfo? _current;
+  List<RouteChangeListener> _listener = [];
+
+
   HiNavigator._();
   static HiNavigator getInstance() {
     if (_instance == null) {
@@ -73,11 +79,46 @@ class HiNavigator extends _RouteJumpListener {
   void registerRouteJump(RouteJumpListener routeJumpListener) {
     this._routeJump = routeJumpListener;
   }
+  // 监听路由跳转
+  void addListener(RouteChangeListener listener) {
+    if(!_listener.contains(listener)) {
+      _listener.add(listener);
+    }
+  }
+  // 移除监听
+  void removeListener(RouteChangeListener listener) {
+    if(_listener.contains(listener)) {
+      _listener.remove(listener);
+    }
+  }
+  //通知路由页面变化
+  void notify(List<MaterialPage> currentPages, List<MaterialPage> prePages) {
+    if(currentPages == prePages) return;
+    var current = RouteStatusInfo(routeStatus: getStatus(currentPages.last), page: currentPages.last.child);
+    //通知路由页面变化
+    _notify(current);
+  }
+
+  void _notify(RouteStatusInfo current) {
+    // 当前页面
+    print('navigator-current: ${current.page}');
+    // 打开过的页面
+    print('navigator-current: ${_current?.page}');
+
+    _listener.forEach((element) {
+      element(current, _current!);
+    });
+
+    _current = current;
+  }
+
+  
 
   @override
   void onJumpTo(RouteStatus routeStatus, {Map? args}) {
     _routeJump?.onJumpTo!(routeStatus, args: args);
   }
+  
 }
 
 // 抽象类供HiNavigator实现

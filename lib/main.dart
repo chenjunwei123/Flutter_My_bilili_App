@@ -2,7 +2,7 @@
  * @Author: cjw 1294511002@qq.com
  * @Date: 2024-01-13 21:50:09
  * @LastEditors: cjw 1294511002@qq.com
- * @LastEditTime: 2024-01-22 21:48:47
+ * @LastEditTime: 2024-01-23 22:06:49
  * @FilePath: \my_bili_app\lib\main.dart
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -75,12 +75,12 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
     //实现路由跳转逻辑
     HiNavigator.getInstance().registerRouteJump(
         RouteJumpListener(onJumpTo: (RouteStatus routeStatus, {Map? args}) {
-          _routeStatus = routeStatus;
-          if(routeStatus == RouteStatus.detail) {
-            this.vedioModel = args!['vedioMo'];
-          }
-          notifyListeners();
-        }));
+      _routeStatus = routeStatus;
+      if (routeStatus == RouteStatus.detail) {
+        this.vedioModel = args!['vedioMo'];
+      }
+      notifyListeners();
+    }));
   }
   List<MaterialPage> pages = [];
   VedioModel? vedioModel;
@@ -102,12 +102,16 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
     } else if (routeStatus == RouteStatus.registration) {
       page = pageWrap(RegistrationPage());
     } else if (routeStatus == RouteStatus.login) {
-      page = pageWrap(LoginPage(onSuccess: () {
-        HiNavigator.getInstance().onJumpTo(RouteStatus.home);
-      },));
+      page = pageWrap(LoginPage(
+        onSuccess: () {
+          HiNavigator.getInstance().onJumpTo(RouteStatus.home);
+        },
+      ));
     }
 
     tempPages = [...tempPages, page];
+    // 通知路由页面发生变化
+    HiNavigator.getInstance().notify(tempPages, pages);
     pages = tempPages;
 
     return WillPopScope(
@@ -127,7 +131,12 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
             if (!route.didPop(result)) {
               return false;
             }
+            var tempPages = [...pages];
+
             pages.removeLast(); //去除
+            //通知路由页面变化，页面返回上一页时
+            HiNavigator.getInstance().notify(pages, tempPages);
+
             return true;
           },
         ),
